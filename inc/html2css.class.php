@@ -4,7 +4,12 @@ class html2css
     function __construct() {
         $this->paths = array();
         $this->ignored_nodes = array(
-            'br'
+            'br',
+            'html',
+            'meta',
+            'head',
+            'body',
+            'title',
         );
         $this->bem_strings = array(
             '--',
@@ -17,15 +22,10 @@ class html2css
 
         // Extract dom
         $doc = new DOMDocument();
-        $doc->loadHTML($content);
-        $body = $doc->getElementsByTagName('body');
+        $doc->loadXML($content);
 
-        if ($body && 0 < $body->length) {
-            $body = $body->item(0);
-        }
-
-        // Parse body nodes
-        $_childPath = $body->childNodes;
+        // Parse nodes
+        $_childPath = $doc->childNodes;
         foreach ($_childPath as $sNode) {
             $this->parseNode($sNode, 0);
         }
@@ -34,19 +34,18 @@ class html2css
     function parseNode($node, $hasParent) {
 
         // Kill if text node
-        if ($node->nodeType == 3) {
+        if ($node->nodeType != 1) {
             return 0;
         }
 
         // Dont touch some nodes
-        if (in_array($node->tagName, $this->ignored_nodes)) {
-            return 0;
-        }
+        if (!in_array($node->tagName, $this->ignored_nodes)) {
 
-        // Get element path
-        $_path = $this->extractNodePath($node);
-        if (!in_array($_path, $this->paths)) {
-            $this->paths[] = $_path;
+            // Get element path
+            $_path = $this->extractNodePath($node);
+            if (!in_array($_path, $this->paths)) {
+                $this->paths[] = $_path;
+            }
         }
 
         // Check child path
