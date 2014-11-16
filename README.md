@@ -13,7 +13,8 @@ This project will create CSS classes based on the provided HTML.
 ### Selector path
 
 * We will construct the path with the parents' extracted node name.
-* If a node use the BEM Methodology ( -- or __ in the name ) we will start the selector from there.
+* If a parent node use the BEM Methodology ( -- or __ in the name ) we will start the selector from there.
+* If the parent node name is a classname and is contained in the node name, ignore it.
 
 
 ## Example

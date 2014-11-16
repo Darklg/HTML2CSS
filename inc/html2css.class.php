@@ -79,17 +79,28 @@ class html2css
 
         /* Clean up path */
 
-        // Reset path if BEM detected
+        // Remove ignored nodes
         $_tmpItems = array();
         foreach ($_pathItems as $_item) {
-            $isBem = false;
-            foreach ($this->bem_strings as $string) {
-                if (strpos($_item, $string) !== false) {
-                    $isBem = true;
-                }
+            if (!in_array($_item, $this->ignored_nodes)) {
+                $_tmpItems[] = $_item;
             }
-            if ($isBem) {
-                $_tmpItems = array();
+        }
+        $_pathItems = $_tmpItems;
+
+        // Reset path if BEM detected on a parent item
+        $_tmpItems = array();
+        foreach ($_pathItems as $i => $_item) {
+            if (isset($_pathItems[$i + 1])) {
+                $isBem = false;
+                foreach ($this->bem_strings as $string) {
+                    if (strpos($_item, $string) !== false) {
+                        $isBem = true;
+                    }
+                }
+                if ($isBem) {
+                    $_tmpItems = array();
+                }
             }
             $_tmpItems[] = $_item;
         }
