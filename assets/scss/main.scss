@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+/* ----------------------------------------------------------
+  Config
+---------------------------------------------------------- */
+
+/* Fonts
+-------------------------- */
+
+$font-main: Helvetica, Arial, sans-serif;
+
+/* Basic colors
+-------------------------- */
+
+$color-main: #333333;
+$color-fb: #3B5998;
+$color-twitter: #00ACED;
+$color-gplus: #DD4B39;
+
+/* Breakpoints
+-------------------------- */
+
+$mobile-max: 767px;
+$tablet-min: 768px;
+$tablet-max: 1023px;
+$desktop-min: 1024px;
+
+// imgsprite /* Sprites
+// imgsprite -------------------------- */
+
+// imgsprite $sprites: sprite-map("css-sprite/*.png", $spacing: 10px);       /* :) */
+// imgsprite $sprites2x: sprite-map("css-sprite-2x/*.png", $spacing: 10px);  /* :) */
+
+/* ----------------------------------------------------------
+  Utilities
+---------------------------------------------------------- */
+
+// imgsprite @import "utilities/_retina-sprites.scss";
+@import "utilities/_plugins.scss";
+
+/* ----------------------------------------------------------
+  CSSCommon
+---------------------------------------------------------- */
+
+@import "csscommon/_cssc-default.scss";
+@import "csscommon/_cssc-common.scss";
+@import "csscommon/_cssc-content.scss";
+@import "csscommon/_cssc-layouts.scss";
+@import "csscommon/_cssc-buttons.scss";
+@import "csscommon/_cssc-grid.scss";
+@import "csscommon/_cssc-forms.scss";
+
+/* ----------------------------------------------------------
+  Front-End
+---------------------------------------------------------- */
+
+@import "default/_fonts.scss";
+@import "default/_base.scss";
+

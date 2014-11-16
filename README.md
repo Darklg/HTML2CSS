@@ -1,7 +1,7 @@
 HTML2CSS
 ========
 
-This project will create CSS classes based on the provided HTML.
+This tool will suggest CSS classes based on the provided HTML.
 
 ## Explanations
 
