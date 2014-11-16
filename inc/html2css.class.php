@@ -4,11 +4,12 @@ class html2css
     function __construct() {
         $this->paths = array();
         $this->ignored_nodes = array(
+            'body',
             'br',
+            'head',
             'html',
             'meta',
-            'head',
-            'body',
+            'option',
             'title',
         );
         $this->bem_strings = array(
