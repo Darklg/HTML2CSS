@@ -3,6 +3,9 @@ class html2css
 {
     function __construct() {
         $this->paths = array();
+        $this->ignored_selectors = array(
+            'div'
+        );
         $this->ignored_nodes = array(
             'body',
             'br',
@@ -79,50 +82,10 @@ class html2css
 
         /* Clean up path */
 
-        // Remove ignored nodes
-        $_tmpItems = array();
-        foreach ($_pathItems as $_item) {
-            if (!in_array($_item, $this->ignored_nodes)) {
-                $_tmpItems[] = $_item;
-            }
-        }
-        $_pathItems = $_tmpItems;
-
-        // Reset path if BEM detected on a parent item
-        $_tmpItems = array();
-        foreach ($_pathItems as $i => $_item) {
-            if (isset($_pathItems[$i + 1])) {
-                $isBem = false;
-                foreach ($this->bem_strings as $string) {
-                    if (strpos($_item, $string) !== false) {
-                        $isBem = true;
-                    }
-                }
-                if ($isBem) {
-                    $_tmpItems = array();
-                }
-            }
-            $_tmpItems[] = $_item;
-        }
-        $_pathItems = $_tmpItems;
-
-        // Do not use parent if contained in item and is a classname
-        $_tmpItems = array();
-        foreach ($_pathItems as $i => $_item) {
-            $_keepItem = true;
-            if (isset($_pathItems[$i + 1])) {
-                $_childItem = $_pathItems[$i + 1];
-                $_itemIsClass = ($_item[0] == '.');
-                $_parentContained = (strpos($_childItem, $_item) !== false);
-                if ($_itemIsClass && $_parentContained) {
-                    $_keepItem = false;
-                }
-            }
-            if ($_keepItem) {
-                $_tmpItems[] = $_item;
-            }
-        }
-        $_pathItems = $_tmpItems;
+        $_pathItems = $this->filter_IgnoredNodes($_pathItems);
+        $_pathItems = $this->filter_IgnoredSelectors($_pathItems);
+        $_pathItems = $this->filter_BEMParent($_pathItems);
+        $_pathItems = $this->filter_ParentContainedClassname($_pathItems);
 
         return implode(' ', $_pathItems);
     }
@@ -153,5 +116,71 @@ class html2css
             $_generatedCSS.= $_path . " {\n\n}\n\n";
         }
         return trim($_generatedCSS);
+    }
+
+    /* ----------------------------------------------------------
+      Filters
+    ---------------------------------------------------------- */
+
+    // Remove ignored nodes
+    private function filter_IgnoredNodes($pathItems) {
+        $_tmpItems = array();
+        foreach ($pathItems as $_item) {
+            if (!in_array($_item, $this->ignored_nodes)) {
+                $_tmpItems[] = $_item;
+            }
+        }
+        return $_tmpItems;
+    }
+
+    // Remove ignored selectors
+    private function filter_IgnoredSelectors($pathItems) {
+        $_tmpItems = array();
+        foreach ($pathItems as $_item) {
+            if (!in_array($_item, $this->ignored_selectors)) {
+                $_tmpItems[] = $_item;
+            }
+        }
+        return $_tmpItems;
+    }
+
+    // Reset path if BEM detected on a parent item
+    private function filter_BEMParent($pathItems) {
+        $_tmpItems = array();
+        foreach ($pathItems as $i => $_item) {
+            if (isset($pathItems[$i + 1])) {
+                $isBem = false;
+                foreach ($this->bem_strings as $string) {
+                    if (strpos($_item, $string) !== false) {
+                        $isBem = true;
+                    }
+                }
+                if ($isBem) {
+                    $_tmpItems = array();
+                }
+            }
+            $_tmpItems[] = $_item;
+        }
+        return $_tmpItems;
+    }
+
+    // Do not use parent if contained in item and is a classname
+    private function filter_ParentContainedClassname($pathItems) {
+        $_tmpItems = array();
+        foreach ($pathItems as $i => $_item) {
+            $_keepItem = true;
+            if (isset($pathItems[$i + 1])) {
+                $_childItem = $pathItems[$i + 1];
+                $_itemIsClass = ($_item[0] == '.');
+                $_parentContained = (strpos($_childItem, $_item) !== false);
+                if ($_itemIsClass && $_parentContained) {
+                    $_keepItem = false;
+                }
+            }
+            if ($_keepItem) {
+                $_tmpItems[] = $_item;
+            }
+        }
+        return $_tmpItems;
     }
 }

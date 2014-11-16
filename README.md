@@ -50,7 +50,7 @@ nav .main-navigation {
 
 }
 
-.main-navigation__links {
+nav .main-navigation__links {
 
 }
 
