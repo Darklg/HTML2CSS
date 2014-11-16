@@ -92,6 +92,24 @@ class html2css
         }
         $_pathItems = $_tmpItems;
 
+        // Do not use parent if contained in item and is a classname
+        $_tmpItems = array();
+        foreach ($_pathItems as $i => $_item) {
+            $_keepItem = true;
+            if (isset($_pathItems[$i + 1])) {
+                $_childItem = $_pathItems[$i + 1];
+                $_itemIsClass = ($_item[0] == '.');
+                $_parentContained = (strpos($_childItem, $_item) !== false);
+                if ($_itemIsClass && $_parentContained) {
+                    $_keepItem = false;
+                }
+            }
+            if ($_keepItem) {
+                $_tmpItems[] = $_item;
+            }
+        }
+        $_pathItems = $_tmpItems;
+
         return implode(' ', $_pathItems);
     }
 
