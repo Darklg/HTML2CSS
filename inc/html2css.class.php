@@ -74,7 +74,9 @@ class html2css
         }
         $_pathItems = array_reverse($_rPathItems);
 
-        // Clean up path
+        /* Clean up path */
+
+        // Reset path if BEM detected
         $_tmpItems = array();
         foreach ($_pathItems as $_item) {
             $isBem = false;
