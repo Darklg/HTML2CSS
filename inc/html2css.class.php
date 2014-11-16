@@ -10,6 +10,7 @@ class html2css
             'html',
             'meta',
             'option',
+            'response',
             'title',
         );
         $this->bem_strings = array(
@@ -20,6 +21,8 @@ class html2css
 
     function parse_html($content) {
         $content = trim($content);
+        $content = str_replace('<!DOCTYPE HTML>', '', $content);
+        $content = '<?xml version="1.0"?><response>' . $content . '</response>';
 
         // Extract dom
         $doc = new DOMDocument();
