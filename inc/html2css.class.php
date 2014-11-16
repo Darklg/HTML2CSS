@@ -22,16 +22,20 @@ class html2css
         );
     }
 
+    /* ----------------------------------------------------------
+      Parsing
+    ---------------------------------------------------------- */
+
     function parse_html($content) {
         $content = trim($content);
         $content = str_replace('<!DOCTYPE HTML>', '', $content);
         $content = '<?xml version="1.0"?><response>' . $content . '</response>';
 
-        // Extract dom
+        /* Extract dom */
         $doc = new DOMDocument();
         $doc->loadXML($content);
 
-        // Parse nodes
+        /* Parse nodes */
         $_childPath = $doc->childNodes;
         foreach ($_childPath as $sNode) {
             $this->parseNode($sNode, 0);
@@ -40,22 +44,22 @@ class html2css
 
     function parseNode($node, $hasParent) {
 
-        // Kill if text node
+        /* Kill if text node */
         if ($node->nodeType != 1) {
             return 0;
         }
 
-        // Dont touch some nodes
+        /* Dont touch some nodes */
         if (!in_array($node->tagName, $this->ignored_nodes)) {
 
-            // Get element path
+            /* Get element path */
             $_path = $this->extractNodePath($node);
             if (!in_array($_path, $this->paths)) {
                 $this->paths[] = $_path;
             }
         }
 
-        // Check child path
+        /* Check child path */
         $_childPath = $node->childNodes;
         foreach ($_childPath as $sNode) {
             $this->parseNode($sNode, 1);
@@ -68,20 +72,19 @@ class html2css
             $this->extractNodeIdentity($_parentNode)
         );
 
-        // Construct path with parent nodes
+        /* Construct path with parent nodes */
         while (isset($_parentNode->parentNode, $_parentNode->parentNode->tagName)) {
             $_parentNode = $_parentNode->parentNode;
             if ($_parentNode->tagName == 'body') {
                 break;
             }
 
-            // Extract parent node identity
+            /* Extract parent node identity */
             $_rPathItems[] = $this->extractNodeIdentity($_parentNode);
         }
         $_pathItems = array_reverse($_rPathItems);
 
         /* Clean up path */
-
         $_pathItems = $this->filter_IgnoredNodes($_pathItems);
         $_pathItems = $this->filter_IgnoredSelectors($_pathItems);
         $_pathItems = $this->filter_BEMParent($_pathItems);
@@ -92,10 +95,10 @@ class html2css
 
     function extractNodeIdentity($node) {
 
-        // Default : tagName
+        /* Default : tagName */
         $_nodeIdentity = $node->tagName;
 
-        // Last element classname if available
+        /* Last element classname if available */
         $_attrClass = trim($node->getAttribute('class'));
         $_cleanedClassNames = array();
         if (!empty($_attrClass)) {
@@ -110,6 +113,10 @@ class html2css
         return $_nodeIdentity;
     }
 
+    /* ----------------------------------------------------------
+      Generation
+    ---------------------------------------------------------- */
+
     function generateCSS() {
         $_generatedCSS = '';
         foreach ($this->paths as $_path) {
@@ -122,7 +129,7 @@ class html2css
       Filters
     ---------------------------------------------------------- */
 
-    // Remove ignored nodes
+    /* Remove ignored nodes */
     private function filter_IgnoredNodes($pathItems) {
         $_tmpItems = array();
         foreach ($pathItems as $_item) {
@@ -133,7 +140,7 @@ class html2css
         return $_tmpItems;
     }
 
-    // Remove ignored selectors
+    /* Remove ignored selectors */
     private function filter_IgnoredSelectors($pathItems) {
         $_tmpItems = array();
         foreach ($pathItems as $_item) {
@@ -144,7 +151,7 @@ class html2css
         return $_tmpItems;
     }
 
-    // Reset path if BEM detected on a parent item
+    /* Reset path if BEM detected on a parent item */
     private function filter_BEMParent($pathItems) {
         $_tmpItems = array();
         foreach ($pathItems as $i => $_item) {
@@ -164,7 +171,7 @@ class html2css
         return $_tmpItems;
     }
 
-    // Do not use parent if contained in item and is a classname
+    /* Do not use parent if contained in item and is a classname */
     private function filter_ParentContainedClassname($pathItems) {
         $_tmpItems = array();
         foreach ($pathItems as $i => $_item) {
