@@ -1,28 +1,48 @@
 <?php
 class html2css
 {
-    function __construct() {
+    public $options = array();
+    private $default_options = array(
+        'ignored_selectors' => array(
+            'type' => 'array',
+            'value' => array(
+                'div'
+            )
+        ) ,
+        'ignored_nodes' => array(
+            'type' => 'array',
+            'value' => array(
+                'body',
+                'br',
+                'head',
+                'html',
+                'link',
+                'meta',
+                'option',
+                'response',
+                'script',
+                'style',
+                'title',
+            )
+        ) ,
+        'bem_strings' => array(
+            'type' => 'array',
+            'value' => array(
+                '--',
+                '__'
+            )
+        ) ,
+        'parent_strings' => array(
+            'type' => 'array',
+            'value' => array(
+                '___'
+            )
+        )
+    );
+
+    function __construct($options = array()) {
         $this->paths = array();
-        $this->ignored_selectors = array(
-            'div'
-        );
-        $this->ignored_nodes = array(
-            'body',
-            'br',
-            'head',
-            'html',
-            'link',
-            'meta',
-            'option',
-            'response',
-            'script',
-            'style',
-            'title',
-        );
-        $this->bem_strings = array(
-            '--',
-            '__'
-        );
+        $this->setOptions($options);
     }
 
     /* ----------------------------------------------------------
@@ -53,11 +73,11 @@ class html2css
         }
 
         /* Dont touch some nodes */
-        if (!in_array($node->tagName, $this->ignored_nodes)) {
+        if (!in_array($node->tagName, $this->options['ignored_nodes'])) {
 
             /* Get element path */
             $_path = $this->extractNodePath($node);
-            if (!in_array($_path, $this->paths)) {
+            if (!in_array($_path, $this->paths) && !empty($_path)) {
                 $this->paths[] = $_path;
             }
         }
@@ -90,7 +110,7 @@ class html2css
         /* Clean up path */
         $_pathItems = $this->filter_IgnoredNodes($_pathItems);
         $_pathItems = $this->filter_IgnoredSelectors($_pathItems);
-        $_pathItems = $this->filter_BEMParent($_pathItems);
+        $_pathItems = $this->filter_ParentBEM($_pathItems);
         $_pathItems = $this->filter_ParentContainedClassname($_pathItems);
 
         return implode(' ', $_pathItems);
@@ -129,14 +149,66 @@ class html2css
     }
 
     /* ----------------------------------------------------------
+      Options
+    ---------------------------------------------------------- */
+
+    /**
+     * Return an option
+     * @param  string $id   option id
+     * @return mixed        option value
+     */
+    private function getOption($id) {
+        if (isset($this->options[$id])) {
+            return $this->options[$id]['value'];
+        }
+        return false;
+    }
+
+    private function setOptions($options) {
+        if (!is_array($options)) {
+            return;
+        }
+
+        foreach ($this->default_options as $_option_id => $_default_option) {
+
+            // Force to default option value
+            $_option = $_default_option['value'];
+            if (isset($options[$_option_id])) {
+                $_option = $options[$_option_id];
+            }
+            $_canImport = true;
+            switch ($_default_option['type']) {
+                case 'array':
+                    // option should be an array
+                    if (!is_array($_option)) {
+                        $_canImport = false;
+                    } else {
+                        foreach ($_option as $v) {
+                            // Should only contains strings
+                            if (!preg_match('/^[a-zA-Z0-9_\-\.]*$/', $v)) {
+                                $_canImport = false;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            if ($_canImport) {
+                $this->options[$_option_id]['value'] = $_option;
+            }
+        }
+    }
+
+    /* ----------------------------------------------------------
       Filters
     ---------------------------------------------------------- */
 
     /* Remove ignored nodes */
     private function filter_IgnoredNodes($pathItems) {
         $_tmpItems = array();
+        $_ignored_nodes = $this->getOption('ignored_nodes');
         foreach ($pathItems as $_item) {
-            if (!in_array($_item, $this->ignored_nodes)) {
+            if (!in_array($_item, $_ignored_nodes)) {
                 $_tmpItems[] = $_item;
             }
         }
@@ -146,26 +218,28 @@ class html2css
     /* Remove ignored selectors */
     private function filter_IgnoredSelectors($pathItems) {
         $_tmpItems = array();
+        $_ignored_selectors = $this->getOption('ignored_selectors');
         foreach ($pathItems as $_item) {
-            if (!in_array($_item, $this->ignored_selectors)) {
+            if (!in_array($_item, $_ignored_selectors)) {
                 $_tmpItems[] = $_item;
             }
         }
         return $_tmpItems;
     }
 
-    /* Reset path if BEM detected on a parent item */
-    private function filter_BEMParent($pathItems) {
+    /* Reset path if BEM or Parent detected on a parent item */
+    private function filter_ParentBEM($pathItems) {
         $_tmpItems = array();
+        $_parentStrings = $this->getOption('bem_strings') + $this->getOption('parent_strings');
         foreach ($pathItems as $i => $_item) {
             if (isset($pathItems[$i + 1])) {
-                $isBem = false;
-                foreach ($this->bem_strings as $string) {
+                $isParent = false;
+                foreach ($_parentStrings as $string) {
                     if (strpos($_item, $string) !== false) {
-                        $isBem = true;
+                        $isParent = true;
                     }
                 }
-                if ($isBem) {
+                if ($isParent) {
                     $_tmpItems = array();
                 }
             }
