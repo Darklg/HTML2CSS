@@ -28,12 +28,12 @@ class html2css
 
     function parse_html($content) {
         $content = trim($content);
-        $content = str_replace('<!DOCTYPE HTML>', '', $content);
-        $content = '<?xml version="1.0"?><response>' . $content . '</response>';
 
         /* Extract dom */
         $doc = new DOMDocument();
-        $doc->loadXML($content);
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($content);
+        libxml_clear_errors();
 
         /* Parse nodes */
         $_childPath = $doc->childNodes;
