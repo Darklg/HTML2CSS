@@ -11,9 +11,12 @@ class html2css
             'br',
             'head',
             'html',
+            'link',
             'meta',
             'option',
             'response',
+            'script',
+            'style',
             'title',
         );
         $this->bem_strings = array(
