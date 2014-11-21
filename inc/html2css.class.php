@@ -2,7 +2,27 @@
 class html2css
 {
     public $options = array();
+    public $choices = array(
+        'css_format' => array(
+            'compressed' => 'Compressed',
+            'expanded' => 'Expanded',
+        ) ,
+        'comment_first_block' => array(
+            'No',
+            'Yes',
+        )
+    );
     private $default_options = array(
+        'css_format' => array(
+            'name' => 'CSS Format',
+            'type' => 'choice',
+            'value' => 'expanded'
+        ) ,
+        'comment_first_block' => array(
+            'name' => 'Comment first block',
+            'type' => 'choice',
+            'value' => 0
+        ) ,
         'ignored_selectors' => array(
             'type' => 'array',
             'value' => array(
@@ -40,9 +60,8 @@ class html2css
         )
     );
 
-    function __construct($options = array()) {
+    function __construct() {
         $this->paths = array();
-        $this->setOptions($options);
     }
 
     /* ----------------------------------------------------------
@@ -141,9 +160,37 @@ class html2css
     ---------------------------------------------------------- */
 
     function generateCSS() {
+        if (empty($this->paths)) {
+            return '';
+        }
+
+        // Options
         $_generatedCSS = '';
+        $_css_format = $this->getOption('css_format');
+        $_comment_first_block = $this->getOption('comment_first_block');
+
+        // Set comment
+        if ($_comment_first_block == 1) {
+            $_blockname = str_replace(array(
+                '.',
+                '-',
+                '_'
+            ) , ' ', $this->paths[0]);
+            $_blockname = ucwords($_blockname);
+            $_generatedCSS.= "/* " . trim($_blockname) . "\n-------------------------- */\n\n";
+        }
+
+        // Add rules
         foreach ($this->paths as $_path) {
-            $_generatedCSS.= $_path . " {\n\n}\n\n";
+            $_generatedCSS.= $_path;
+            switch ($_css_format) {
+                case 'compressed':
+                    $_generatedCSS.= " { }\n";
+                    break;
+
+                default:
+                    $_generatedCSS.= " {\n\n}\n\n";
+            }
         }
         return trim($_generatedCSS);
     }
@@ -164,7 +211,7 @@ class html2css
         return false;
     }
 
-    private function setOptions($options) {
+    public function setOptions($options) {
         if (!is_array($options)) {
             return;
         }
@@ -179,17 +226,28 @@ class html2css
             $_canImport = true;
             switch ($_default_option['type']) {
                 case 'array':
+
                     // option should be an array
                     if (!is_array($_option)) {
                         $_canImport = false;
                     } else {
                         foreach ($_option as $v) {
+
                             // Should only contains strings
                             if (!preg_match('/^[a-zA-Z0-9_\-\.]*$/', $v)) {
                                 $_canImport = false;
                             }
                         }
                     }
+                    break;
+
+                case 'choice':
+
+                    // option should be in corresponding array
+                    if (!array_key_exists($_option, $this->choices[$_option_id])) {
+                        $_canImport = false;
+                    }
+
                     break;
             }
 
@@ -266,5 +324,34 @@ class html2css
             }
         }
         return $_tmpItems;
+    }
+
+    /* ----------------------------------------------------------
+      HTML Helpers
+    ---------------------------------------------------------- */
+
+    public function generateSelect($id) {
+
+        // Check values
+        if (!isset($this->choices[$id])) {
+            return '';
+        }
+        $option_value = $this->default_options[$id]['value'];
+        if (isset($this->options[$id])) {
+            $option_value = $this->options[$id]['value'];
+        }
+        $html_id = 'option_' . $id;
+        $values = $this->choices[$id];
+
+        // Set HTML
+        $return = '<div class="option-block">';
+        $return.= '<label for="' . $html_id . '">' . $this->default_options[$id]['name'] . ' :</label>';
+        $return.= '<select name="options[' . $id . ']" id="' . $html_id . '">';
+        foreach ($values as $key => $value) {
+            $return.= '<option ' . ($option_value == $key ? 'selected="selected"' : '') . ' value="' . $key . '">' . $value . '</option>';
+        }
+        $return.= '</select>';
+        $return.= '</div>';
+        return $return;
     }
 }

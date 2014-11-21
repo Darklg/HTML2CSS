@@ -60,3 +60,23 @@ footer {
     margin-bottom: 10px;
     font-family: Monospace;
 }
+
+/* Option Block
+-------------------------- */
+
+.option-block {
+    display: inline-block;
+    padding-right: 20px;
+    vertical-align: middle;
+}
+
+.option-block label {
+    display: block;white-space: nowrap;
+    padding-bottom: 2px;
+    font-weight: bold;
+}
+
+.option-block select {
+    display: block;
+    width: 100%;
+}
