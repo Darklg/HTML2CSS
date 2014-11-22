@@ -26,7 +26,7 @@ header("X-XSS-Protection: 0");
                                 <legend>HTML to transform</legend>
                                 <textarea required class="inputbase" name="html" rows="5" cols="100"><?php echo htmlentities($html_posted); ?></textarea><br />
                                 <div id="display-options">
-                                    <a href="#" onclick="document.getElementById('options').style.display='block';document.getElementById('display-options').style.display='none';">Show options</a>
+                                    <a href="#" onclick="document.getElementById('options').style.display='block';document.getElementById('display-options').style.display='none';return false;">Show options</a>
                                 </div>
                                 <div id="options" class="options" style="display: none;">
                                 <?php echo $html2css->generateSelect('css_format'); ?>

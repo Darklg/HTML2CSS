@@ -1,7 +1,10 @@
 <?php
 class html2css
 {
-    public $options = array();
+    private $conf = array(
+        'cookie_name' => 'html2css_options',
+        'cookie_duration' => 31536000,
+    );
     public $choices = array(
         'css_format' => array(
             'compressed' => 'Compressed',
@@ -12,7 +15,7 @@ class html2css
             'Yes',
         )
     );
-    private $default_options = array(
+    private $options = array(
         'css_format' => array(
             'name' => 'CSS Format',
             'type' => 'choice',
@@ -62,6 +65,7 @@ class html2css
 
     function __construct() {
         $this->paths = array();
+        $this->setOptions();
     }
 
     /* ----------------------------------------------------------
@@ -211,12 +215,20 @@ class html2css
         return false;
     }
 
-    public function setOptions($options) {
+    public function setOptions($options = false) {
+
+        if ($options === false && isset($_COOKIE[$this->conf['cookie_name']])) {
+            $options = json_decode($_COOKIE[$this->conf['cookie_name']], 1);
+        }
+
         if (!is_array($options)) {
             return;
         }
 
-        foreach ($this->default_options as $_option_id => $_default_option) {
+        $default_options = $this->options;
+        $cookie_options = array();
+
+        foreach ($this->options as $_option_id => $_default_option) {
 
             // Force to default option value
             $_option = $_default_option['value'];
@@ -253,8 +265,12 @@ class html2css
 
             if ($_canImport) {
                 $this->options[$_option_id]['value'] = $_option;
+                $cookie_options[$_option_id] = $_option;
             }
         }
+
+        // Save options
+        setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
     }
 
     /* ----------------------------------------------------------
@@ -336,16 +352,13 @@ class html2css
         if (!isset($this->choices[$id])) {
             return '';
         }
-        $option_value = $this->default_options[$id]['value'];
-        if (isset($this->options[$id])) {
-            $option_value = $this->options[$id]['value'];
-        }
+        $option_value = $this->options[$id]['value'];
         $html_id = 'option_' . $id;
         $values = $this->choices[$id];
 
         // Set HTML
         $return = '<div class="option-block">';
-        $return.= '<label for="' . $html_id . '">' . $this->default_options[$id]['name'] . ' :</label>';
+        $return.= '<label for="' . $html_id . '">' . $this->options[$id]['name'] . ' :</label>';
         $return.= '<select name="options[' . $id . ']" id="' . $html_id . '">';
         foreach ($values as $key => $value) {
             $return.= '<option ' . ($option_value == $key ? 'selected="selected"' : '') . ' value="' . $key . '">' . $value . '</option>';
