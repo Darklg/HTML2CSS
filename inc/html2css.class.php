@@ -1,6 +1,7 @@
 <?php
 class html2css
 {
+    public $paths = array();
     private $conf = array(
         'cookie_name' => 'html2css_options',
         'cookie_duration' => 31536000,
