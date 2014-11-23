@@ -14,6 +14,10 @@ class html2css
         'comment_first_block' => array(
             'No',
             'Yes',
+        ) ,
+        'save_options_cookie' => array(
+            'No',
+            'Yes',
         )
     );
     private $options = array(
@@ -61,6 +65,11 @@ class html2css
             'value' => array(
                 '___'
             )
+        ) ,
+        'save_options_cookie' => array(
+            'name' => 'Save options in a cookie',
+            'type' => 'choice',
+            'value' => 1
         )
     );
 
@@ -270,8 +279,10 @@ class html2css
             }
         }
 
-        // Save options
-        setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
+        // Save options in a  cookie
+        if ($this->getOption('save_options_cookie')) {
+            setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
+        }
     }
 
     /* ----------------------------------------------------------
