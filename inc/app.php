@@ -8,7 +8,6 @@ if (!empty($_POST) && isset($_POST['html'])) {
         $options = $_POST['options'];
     }
     $html2css->setOptions($options);
-    $html2css->generateCSS();
     $html_posted = trim($_POST['html']);
     if (!empty($html_posted)) {
         $html2css->parse_html($html_posted);
