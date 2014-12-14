@@ -154,6 +154,14 @@ class html2css
         /* Default : tagName */
         $_nodeIdentity = $node->tagName;
 
+        /* Input : add type */
+        if ($node->tagName == 'input') {
+            $type = $node->getAttribute('type');
+            if (!empty($type)) {
+                $_nodeIdentity = 'input[type="' . $type . '"]';
+            }
+        }
+
         /* Last element classname if available */
         $_attrClass = trim($node->getAttribute('class'));
         $_cleanedClassNames = array();
