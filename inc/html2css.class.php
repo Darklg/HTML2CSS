@@ -256,8 +256,10 @@ class html2css
                 $_option = $options[$_option_id];
             }
             $_canImport = true;
-            switch ($_default_option['type']) {
+            $type = $_default_option['type'];
+            switch ($type) {
                 case 'array':
+                case 'array_multi':
 
                     // option should be an array
                     if (!is_array($_option)) {
@@ -266,7 +268,12 @@ class html2css
                         foreach ($_option as $v) {
 
                             // Should only contains strings
-                            if (!preg_match('/^[a-zA-Z0-9_\-\.]*$/', $v)) {
+                            if ($type == 'array' && !preg_match('/^[a-zA-Z0-9_\-\.]*$/', $v)) {
+                                $_canImport = false;
+                            }
+
+                            // Should only contains arrays
+                            if ($type == 'array_multi' && !is_array($v)) {
                                 $_canImport = false;
                             }
                         }
