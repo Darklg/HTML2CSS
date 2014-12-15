@@ -53,6 +53,19 @@ class html2css
                 'title',
             )
         ) ,
+        'simplify_selectors_parts' => array(
+            'type' => 'array_multi',
+            'value' => array(
+                array(
+                    'before' => 'ul li',
+                    'after' => 'li'
+                ) ,
+                array(
+                    'before' => 'li a',
+                    'after' => 'a'
+                ) ,
+            )
+        ) ,
         'bem_strings' => array(
             'type' => 'array',
             'value' => array(
@@ -147,6 +160,7 @@ class html2css
         $_pathItems = $this->filter_ParentContainedClassname($_pathItems);
 
         $_path = implode(' ', $_pathItems);
+        $_path = $this->filter_SimplifySelectorsParts($_path);
 
         return $_path;
     }
@@ -369,6 +383,27 @@ class html2css
             }
         }
         return $_tmpItems;
+    }
+
+    /* Simplify selectors parts */
+    public function filter_SimplifySelectorsParts($path) {
+        foreach ($this->options['simplify_selectors_parts']['value'] as $var) {
+            if (!isset($var['before'], $var['after'])) {
+                continue;
+            }
+            $before = ' ' . $var['before'];
+            $after = ' ' . $var['after'];
+            $before_len = strlen($before);
+
+            /* If node contains the "before" selector */
+            if (strpos($path, $before) !== false) {
+
+                /* Replace it by the "after" selector */
+                $path = str_replace($before, $after, $path);
+            }
+        }
+
+        return $path;
     }
 
     /* ----------------------------------------------------------
