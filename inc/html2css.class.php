@@ -140,13 +140,15 @@ class html2css
         }
         $_pathItems = array_reverse($_rPathItems);
 
-        /* Clean up path */
+        /* Clean up path Items */
         $_pathItems = $this->filter_IgnoredNodes($_pathItems);
         $_pathItems = $this->filter_IgnoredSelectors($_pathItems);
         $_pathItems = $this->filter_ParentBEM($_pathItems);
         $_pathItems = $this->filter_ParentContainedClassname($_pathItems);
 
-        return implode(' ', $_pathItems);
+        $_path = implode(' ', $_pathItems);
+
+        return $_path;
     }
 
     function extractNodeIdentity($node) {
