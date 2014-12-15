@@ -43,6 +43,14 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals("p { }\np .test { }", $this->html2css->generateCSS());
     }
 
+    function testSelectorsSimplification() {
+
+        // Test selectors simplification
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<ul><li><a href="#">az</a></li></ul>');
+        $this->assertEquals("ul { }\nul li { }\nul a { }", $this->html2css->generateCSS());
+    }
+
     function testExpandedLayout() {
         $html2css = new html2css();
         $this->html2css->setOptions(array(
