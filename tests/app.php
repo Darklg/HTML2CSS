@@ -5,6 +5,7 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
 {
     private $default_options = array(
         'css_format' => 'compressed',
+        'comment_first_block' => 0,
         'save_options_cookie' => 0,
     );
     private $html2css;
