@@ -11,6 +11,8 @@ header("X-XSS-Protection: 0");
         <meta charset="UTF-8" />
         <title>HTML 2 CSS - Transform a HTML Layout into CSS</title>
         <link rel="stylesheet" type="text/css" href="assets/css/main.css" />
+        <script src="assets/js/jquery/jquery.min.js"></script>
+        <script src="assets/js/events.js"></script>
     </head>
     <body>
         <div class="centered-container cc-main">
@@ -24,23 +26,25 @@ header("X-XSS-Protection: 0");
                         <div class="col-50p">
                             <fieldset>
                                 <legend>HTML to transform</legend>
-                                <textarea required class="inputbase" name="html" rows="5" cols="100"><?php echo htmlentities($html_posted); ?></textarea><br />
-                                <div id="display-options">
-                                    <a href="#" onclick="document.getElementById('options').style.display='block';document.getElementById('display-options').style.display='none';return false;">Show options</a>
-                                </div>
-                                <div id="options" class="options" style="display: none;">
-                                <?php echo $html2css->generateSelect('css_format'); ?>
-                                <?php echo $html2css->generateSelect('comment_first_block'); ?>
-                                </div><br />
-                                <button class="cssc-button cssc-button--default cssc-button--medium" type="submit">Transform</button>
+                                <textarea id="html_to_transform" required class="inputbase" name="html" rows="5" cols="100"><?php echo htmlentities($html_posted); ?></textarea><br />
                             </fieldset>
                         </div>
                         <div class="col-50p">
                             <fieldset>
                                 <legend>Generated CSS</legend>
-                                <textarea class="inputbase" onclick="this.select()" rows="20" cols="100"><?php echo htmlentities($generated_css); ?></textarea>
+                                <textarea id="generated_css" class="inputbase" rows="20" cols="100"><?php echo htmlentities($generated_css); ?></textarea>
                             </fieldset>
                         </div>
+                    </div>
+                    <div class="form-submit">
+                        <div id="display-options" class="options">
+                            <a href="#">Show options</a>
+                        </div>
+                        <div id="options" class="options" style="display: none;">
+                            <?php echo $html2css->generateSelect('css_format'); ?>
+                            <?php echo $html2css->generateSelect('comment_first_block'); ?>
+                        </div>
+                        <button class="cssc-button cssc-button--default cssc-button--medium" type="submit">Transform</button>
                     </div>
                 </form>
                 <footer>
