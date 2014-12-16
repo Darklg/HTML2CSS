@@ -55,12 +55,12 @@ class html2css
             'type' => 'array_multi',
             'value' => array(
                 array(
-                    'before' => 'ul li',
-                    'after' => 'li'
-                ) ,
-                array(
                     'before' => 'li a',
                     'after' => 'a'
+                ) ,
+                array(
+                    'before' => 'ul li',
+                    'after' => 'li'
                 ) ,
             )
         ) ,
@@ -304,9 +304,9 @@ class html2css
             }
         }
 
-        // Save options in a  cookie
-            setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
-        }
+        // Save options in a cookie
+        setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
+    }
 
     public function setCookieVersion() {
         $option_name = $this->conf['cookie_name'] . '__version';
