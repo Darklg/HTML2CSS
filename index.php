@@ -44,6 +44,7 @@ header("X-XSS-Protection: 0");
                             <?php echo $html2css->generateSelect('css_format'); ?>
                             <?php echo $html2css->generateSelect('comment_first_block'); ?>
                         </div>
+                        <button class="cssc-button cssc-button--default cssc-button--medium cssc-button--clean" id="demo-code" type="button">Demo code</button>
                         <button class="cssc-button cssc-button--default cssc-button--medium" type="submit">Transform</button>
                     </div>
                 </form>

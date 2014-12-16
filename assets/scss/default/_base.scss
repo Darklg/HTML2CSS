@@ -61,6 +61,18 @@ footer {
     font-family: Monospace;
 }
 
+/* Submit
+-------------------------- */
+
+.cssc-button--clean {
+    opacity: 0.80;
+    background-image: none;
+}
+
+.form-submit .options {
+    margin-bottom: 10px;
+}
+
 /* Option Block
 -------------------------- */
 
@@ -71,9 +83,10 @@ footer {
 }
 
 .option-block label {
-    display: block;white-space: nowrap;
+    display: block;
     padding-bottom: 2px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .option-block select {

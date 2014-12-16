@@ -6,7 +6,7 @@ class html2css
         'cookie_version' => '',
         'cookie_name' => 'html2css_options',
         'cookie_duration' => 31536000,
-        'cookie_version' => 20141216090830,
+        'cookie_version' => 20141216091229,
     );
     public $choices = array(
         'css_format' => array(
@@ -22,7 +22,7 @@ class html2css
         'css_format' => array(
             'name' => 'CSS Format',
             'type' => 'choice',
-            'value' => 'expanded'
+            'value' => 'compressed'
         ) ,
         'comment_first_block' => array(
             'name' => 'Comment first block',

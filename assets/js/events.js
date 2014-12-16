@@ -12,4 +12,14 @@ jQuery(document).ready(function($) {
         $(this).select();
     });
 
+    // Demo code
+    $('#demo-code').on('click', function(e) {
+        e.preventDefault();
+        $.ajax({
+            cache: false,
+            url: "assets/html/demo-code.html"
+        }).success(function(response) {
+            $('#html_to_transform').val(response);
+        });
+    });
 });
