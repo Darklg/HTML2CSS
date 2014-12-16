@@ -3,8 +3,10 @@ class html2css
 {
     public $paths = array();
     private $conf = array(
+        'cookie_version' => '',
         'cookie_name' => 'html2css_options',
         'cookie_duration' => 31536000,
+        'cookie_version' => 20141216090830,
     );
     public $choices = array(
         'css_format' => array(
@@ -12,10 +14,6 @@ class html2css
             'expanded' => 'Expanded',
         ) ,
         'comment_first_block' => array(
-            'No',
-            'Yes',
-        ) ,
-        'save_options_cookie' => array(
             'No',
             'Yes',
         )
@@ -78,16 +76,12 @@ class html2css
             'value' => array(
                 '___'
             )
-        ) ,
-        'save_options_cookie' => array(
-            'name' => 'Save options in a cookie',
-            'type' => 'choice',
-            'value' => 1
         )
     );
 
     function __construct() {
         $this->paths = array();
+        $this->setCookieVersion();
         $this->setOptions();
     }
 
@@ -311,9 +305,18 @@ class html2css
         }
 
         // Save options in a  cookie
-        if ($this->getOption('save_options_cookie')) {
             setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
         }
+
+    public function setCookieVersion() {
+        $option_name = $this->conf['cookie_name'] . '__version';
+
+        // Unset cookie options if it corresponds to an invalid version
+        if (isset($_COOKIE[$option_name]) && $_COOKIE[$option_name] != $this->conf['cookie_version']) {
+            $_COOKIE[$this->conf['cookie_name']] = '';
+            setcookie($this->conf['cookie_name'], '', time() + $this->conf['cookie_duration']);
+        }
+        setcookie($option_name, $this->conf['cookie_version'], time() + $this->conf['cookie_duration']);
     }
 
     /* ----------------------------------------------------------
