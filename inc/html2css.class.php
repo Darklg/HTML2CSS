@@ -79,7 +79,8 @@ class html2css
         )
     );
 
-    function __construct() {
+    function __construct($cookie = true) {
+        $this->cookie = is_bool($cookie) ? $cookie : true;
         $this->paths = array();
         $this->setCookieVersion();
         $this->setOptions();
@@ -305,10 +306,15 @@ class html2css
         }
 
         // Save options in a cookie
+        if ($this->cookie) {
         setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
+    }
     }
 
     public function setCookieVersion() {
+        if (!$this->cookie) {
+            return false;
+        }
         $option_name = $this->conf['cookie_name'] . '__version';
 
         // Unset cookie options if it corresponds to an invalid version
