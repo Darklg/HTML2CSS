@@ -83,6 +83,18 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals('.az { }', $this->html2css->generateCSS());
     }
 
+    function testDemoCode() {
+
+        // Test if demo code always returns a good result
+        $this->html2css->paths = array();
+
+        $demo_code_html = file_get_contents(dirname(__FILE__) . '/../assets/html/demo-code.html');
+        $demo_code_css = trim(file_get_contents(dirname(__FILE__) . '/../assets/html/demo-code.css'));
+
+        $this->html2css->parse_html($demo_code_html);
+        $this->assertEquals($demo_code_css, $this->html2css->generateCSS());
+    }
+
     function testExpandedLayout() {
         $html2css = new html2css(false);
         $html2css->setOptions(array(
