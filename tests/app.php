@@ -5,18 +5,17 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
 {
     private $default_options = array(
         'css_format' => 'compressed',
-        'comment_first_block' => 0,
-        'save_options_cookie' => 0,
+        'comment_first_block' => 0
     );
     private $html2css;
 
     function setUp() {
-        $this->html2css = new html2css();
+        $this->html2css = new html2css(false);
         $this->html2css->setOptions($this->default_options);
     }
 
     function testReturnNoCSSIfEmpty() {
-        $html2css = new html2css();
+        $html2css = new html2css(false);
         $this->assertEquals('', $html2css->generateCSS());
     }
 
@@ -53,10 +52,9 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
     }
 
     function testExpandedLayout() {
-        $html2css = new html2css();
-        $this->html2css->setOptions(array(
-            'css_format' => 'expanded',
-            'save_options_cookie' => 0,
+        $html2css = new html2css(false);
+        $html2css->setOptions(array(
+            'css_format' => 'expanded'
         ));
         $html2css->parse_html('<p class="test">az</p>');
         $this->assertEquals(".test {\n\n}", $html2css->generateCSS());
