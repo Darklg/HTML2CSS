@@ -95,6 +95,14 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals($demo_code_css, $this->html2css->generateCSS());
     }
 
+    function testIgnoredAttributes() {
+
+        // Test ignored attributes
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<a href="#" data-ng-repeat="n in [1,2,3]"></a>');
+        $this->assertEquals('a { }', $this->html2css->generateCSS());
+    }
+
     function testExpandedLayout() {
         $html2css = new html2css(false);
         $html2css->setOptions(array(

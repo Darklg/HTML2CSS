@@ -51,6 +51,12 @@ class html2css
                 'title',
             )
         ) ,
+        'ignored_attributes' => array(
+            'type' => 'array',
+            'value' => array(
+                'data-ng-repeat'
+            )
+        ) ,
         'simplify_selectors_parts' => array(
             'type' => 'array_multi',
             'value' => array(
@@ -170,6 +176,9 @@ class html2css
         $_nodeDataAttributes = array();
         if ($node->hasAttributes()) {
             foreach ($node->attributes as $attr) {
+                if (in_array($attr->nodeName, $this->options['ignored_attributes']['value'])) {
+                    continue;
+                }
                 $_nodeAttributes[$attr->nodeName] = $attr->nodeValue;
                 if (substr($attr->nodeName, 0, 4) == 'data') {
                     $_nodeDataAttributes[$attr->nodeName] = $attr->nodeValue;
