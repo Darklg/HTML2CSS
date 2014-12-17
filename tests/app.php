@@ -51,6 +51,14 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals("ul { }\nul li { }\nul a { }", $this->html2css->generateCSS());
     }
 
+    function testInputGetsType() {
+
+        // Test if input gets type
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<input type="text" name="az" value="az" />');
+        $this->assertEquals('input[type="text"] { }', $this->html2css->generateCSS());
+    }
+
     function testExpandedLayout() {
         $html2css = new html2css(false);
         $html2css->setOptions(array(
