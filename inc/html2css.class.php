@@ -114,7 +114,7 @@ class html2css
         }
 
         /* Dont touch some nodes */
-        if (!in_array($node->tagName, $this->options['ignored_nodes'])) {
+        if (!in_array($node->tagName, $this->options['ignored_nodes']['value'])) {
 
             /* Get element path */
             $_path = $this->extractNodePath($node);
