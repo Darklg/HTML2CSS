@@ -178,10 +178,9 @@ class html2css
         }
 
         /* Input : add type */
-        if ($node->tagName == 'input') {
-            $type = $node->getAttribute('type');
-            if (!empty($type)) {
-                $_nodeIdentity = 'input[type="' . $type . '"]';
+        if ($node->tagName == 'input' && isset($_nodeAttributes['type'])) {
+            $value = $_nodeAttributes['type'];
+            $_nodeIdentity = $node->tagName . '[type="' . $value . '"]';
             }
         }
 
