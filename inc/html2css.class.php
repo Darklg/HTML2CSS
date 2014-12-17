@@ -165,6 +165,18 @@ class html2css
         /* Default : tagName */
         $_nodeIdentity = $node->tagName;
 
+        /* Get element attributes */
+        $_nodeAttributes = array();
+        $_nodeDataAttributes = array();
+        if ($node->hasAttributes()) {
+            foreach ($node->attributes as $attr) {
+                $_nodeAttributes[$attr->nodeName] = $attr->nodeValue;
+                if (substr($attr->nodeName, 0, 4) == 'data') {
+                    $_nodeDataAttributes[$attr->nodeName] = $attr->nodeValue;
+                }
+            }
+        }
+
         /* Input : add type */
         if ($node->tagName == 'input') {
             $type = $node->getAttribute('type');
