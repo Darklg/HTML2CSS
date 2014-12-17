@@ -67,6 +67,22 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals('label[for="az"] { }', $this->html2css->generateCSS());
     }
 
+    function testDataAttributeIsUsed() {
+
+        // Test if data attribute is used
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<a href="#" data-test="test"></a>');
+        $this->assertEquals('a[data-test="test"] { }', $this->html2css->generateCSS());
+    }
+
+    function testDataAttributeIsOverridden() {
+
+        // Test if data attribute is overridden by a class
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<a href="#" data-test="test" class="az"></a>');
+        $this->assertEquals('.az { }', $this->html2css->generateCSS());
+    }
+
     function testExpandedLayout() {
         $html2css = new html2css(false);
         $html2css->setOptions(array(

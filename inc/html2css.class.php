@@ -177,11 +177,21 @@ class html2css
             }
         }
 
+        /* If one data-attribute exists, use it to qualify tagName */
+        if (count($_nodeDataAttributes) == 1) {
+            $name = key($_nodeDataAttributes);
+            $value = trim(current($_nodeDataAttributes));
+            if (!empty($value)) {
+                $value = '="' . $value . '"';
+            }
+            $_nodeIdentity = $node->tagName . '[' . $name . $value . ']';
+        }
+
         /* Input : add type */
         if ($node->tagName == 'input' && isset($_nodeAttributes['type'])) {
             $value = $_nodeAttributes['type'];
             $_nodeIdentity = $node->tagName . '[type="' . $value . '"]';
-            }
+        }
 
         /* Label : add for */
         if ($node->tagName == 'label' && isset($_nodeAttributes['for'])) {
@@ -323,8 +333,8 @@ class html2css
 
         // Save options in a cookie
         if ($this->cookie) {
-        setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
-    }
+            setcookie($this->conf['cookie_name'], json_encode($cookie_options) , time() + $this->conf['cookie_duration']);
+        }
     }
 
     public function setCookieVersion() {
