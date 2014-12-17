@@ -59,6 +59,14 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals('input[type="text"] { }', $this->html2css->generateCSS());
     }
 
+    function testLabelGetsFor() {
+
+        // Test if label gets for
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<label for="az">Hello</label>');
+        $this->assertEquals('label[for="az"] { }', $this->html2css->generateCSS());
+    }
+
     function testExpandedLayout() {
         $html2css = new html2css(false);
         $html2css->setOptions(array(

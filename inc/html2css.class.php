@@ -182,6 +182,11 @@ class html2css
             $value = $_nodeAttributes['type'];
             $_nodeIdentity = $node->tagName . '[type="' . $value . '"]';
             }
+
+        /* Label : add for */
+        if ($node->tagName == 'label' && isset($_nodeAttributes['for'])) {
+            $value = $_nodeAttributes['for'];
+            $_nodeIdentity = $node->tagName . '[for="' . $value . '"]';
         }
 
         /* Last element classname if available */
