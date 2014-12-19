@@ -220,6 +220,12 @@ class html2css
             }
             $_nodeIdentity = '.' . end($_cleanedClassNames);
         }
+
+        /* Use ID only if node identity is equal to tagName */
+        if ($_nodeIdentity == $node->tagName && isset($_nodeAttributes['id'])) {
+            $_nodeIdentity = '#' . $_nodeAttributes['id'];
+        }
+
         return $_nodeIdentity;
     }
 

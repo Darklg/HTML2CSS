@@ -83,6 +83,22 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals('.az { }', $this->html2css->generateCSS());
     }
 
+    function testIDIsUsed() {
+
+        // Test if ID attribute is used
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<strong id="test">test</strong>');
+        $this->assertEquals('#test { }', $this->html2css->generateCSS());
+    }
+
+    function testIDIsUsedInLastResort() {
+
+        // Test if ID attribute is used only if node identity is equal to tagName
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<strong class="test" id="test">test</strong>');
+        $this->assertEquals('.test { }', $this->html2css->generateCSS());
+    }
+
     function testDemoCode() {
 
         // Test if demo code always returns a good result
