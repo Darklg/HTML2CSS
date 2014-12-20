@@ -43,6 +43,8 @@ header("X-XSS-Protection: 0");
                         <div id="options" class="options" style="display: none;">
                             <?php echo $html2css->generateSelect('css_format'); ?>
                             <?php echo $html2css->generateSelect('comment_first_block'); ?>
+                            <?php echo $html2css->generateSelect('create_first_last_child'); ?>
+                            <?php echo $html2css->generateSelect('create_following_selector'); ?>
                         </div>
                         <button class="cssc-button cssc-button--default cssc-button--medium cssc-button--clean" id="demo-code" type="button">Demo code</button>
                         <button class="cssc-button cssc-button--default cssc-button--medium" type="submit">Transform</button>

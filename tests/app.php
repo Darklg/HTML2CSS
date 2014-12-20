@@ -5,7 +5,9 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
 {
     private $default_options = array(
         'css_format' => 'compressed',
-        'comment_first_block' => 0
+        'comment_first_block' => 0,
+        'create_first_last_child' => 0,
+        'create_following_selector' => 0,
     );
     private $html2css;
 
@@ -118,6 +120,29 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->html2css->parse_html('<a href="#" data-ng-repeat="n in [1,2,3]"></a>');
         $this->assertEquals('a { }', $this->html2css->generateCSS());
     }
+
+    function testFollowingSelectors() {
+
+        // Test for following ( * + * ) selectors
+        $html2css = new html2css(false);
+        $html2css->setOptions(array(
+            'create_following_selector' => 1
+        ));
+        $html2css->parse_html('<ul><li>az</li><li>az</li><li>az</li></ul>');
+        $this->assertEquals("ul { }\nul li { }\nul li + li { }", $html2css->generateCSS());
+    }
+
+    function testFirstLastChild() {
+
+        // Test for :first-child & :last-child creation
+        $html2css = new html2css(false);
+        $html2css->setOptions(array(
+            'create_first_last_child' => 1
+        ));
+        $html2css->parse_html('<ul><li>az</li><li>az</li><li>az</li></ul>');
+        $this->assertEquals("ul { }\nul li { }\nul li:first-child { }\nul li:last-child { }", $html2css->generateCSS());
+    }
+
 
     function testExpandedLayout() {
         $html2css = new html2css(false);

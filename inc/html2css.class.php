@@ -16,6 +16,14 @@ class html2css
         'comment_first_block' => array(
             'No',
             'Yes',
+        ) ,
+        'create_first_last_child' => array(
+            'No',
+            'Yes',
+        ) ,
+        'create_following_selector' => array(
+            'No',
+            'Yes',
         )
     );
     private $options = array(
@@ -26,6 +34,16 @@ class html2css
         ) ,
         'comment_first_block' => array(
             'name' => 'Comment first block',
+            'type' => 'choice',
+            'value' => 0
+        ) ,
+        'create_first_last_child' => array(
+            'name' => 'Create first/last child if multiple items',
+            'type' => 'choice',
+            'value' => 0
+        ) ,
+        'create_following_selector' => array(
+            'name' => 'Create *+* if multiple items',
             'type' => 'choice',
             'value' => 0
         ) ,
@@ -105,34 +123,71 @@ class html2css
         $doc->loadHTML($content);
         libxml_clear_errors();
 
-        /* Parse nodes */
-        $_childPath = $doc->childNodes;
-        foreach ($_childPath as $sNode) {
-            $this->parseNode($sNode, 0);
-        }
+        $this->parseNodes($doc);
     }
 
-    function parseNode($node, $hasParent) {
+    function parseNodes($node) {
 
-        /* Kill if text node */
-        if ($node->nodeType != 1) {
-            return 0;
-        }
-
-        /* Dont touch some nodes */
-        if (!in_array($node->tagName, $this->options['ignored_nodes']['value'])) {
-
-            /* Get element path */
-            $_path = $this->extractNodePath($node);
-            if (!in_array($_path, $this->paths) && !empty($_path)) {
-                $this->paths[] = $_path;
-            }
-        }
-
-        /* Check child path */
+        /* Parse nodes */
         $_childPath = $node->childNodes;
+        $_tmpPaths = array();
+        $_path = '';
+
         foreach ($_childPath as $sNode) {
-            $this->parseNode($sNode, 1);
+
+            /* Only if not text node */
+            if ($sNode->nodeType != 1) {
+                continue;
+            }
+
+            /* Dont touch some nodes */
+            if (!in_array($sNode->tagName, $this->options['ignored_nodes']['value'])) {
+
+                /* Get element path */
+                $_path = $this->extractNodePath($sNode);
+                if (!empty($_path)) {
+                    $_tmpPaths[] = $_path;
+                    if (!in_array($_path, $this->paths)) {
+                        $this->paths[] = $_path;
+                    }
+                }
+            }
+
+            $this->parseNodes($sNode);
+        }
+
+        /* If multiple path, and latest terminated by a tagName */
+        $_create_first_last_child = $this->getOption('create_first_last_child');
+        $_create_following_selector = $this->getOption('create_following_selector');
+        if (($_create_first_last_child || $_create_following_selector) && count($_tmpPaths) > 2 && !empty($_path) && preg_match('/\ ([a-z1-6]+)$/', $_path, $_matches)) {
+
+            $_allEquals = true;
+            $_value = $_path;
+
+            /* If all child are similar */
+            foreach ($_tmpPaths as $_tmpPath) {
+                if ($_tmpPath != $_path) {
+                    $_allEquals = false;
+                }
+            }
+
+            /* Add more specified rules */
+            if ($_allEquals) {
+                $_newRules = array();
+                if ($_create_first_last_child) {
+                    $_newRules[] = $_path . ':first-child';
+                    $_newRules[] = $_path . ':last-child';
+                }
+                if ($_create_following_selector) {
+                    $_newRules[] = $_path . ' + ' . $_matches[1];
+                }
+
+                /* Insert them after the current path */
+
+                $_pathPosition = array_search($_path, $this->paths) + 1;
+
+                $this->paths = array_merge(array_slice($this->paths, 0, $_pathPosition, true) , $_newRules, array_slice($this->paths, $_pathPosition, count($this->paths) - $_pathPosition, true));
+            }
         }
     }
 
