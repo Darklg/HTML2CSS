@@ -10,3 +10,4 @@ form { }
 form .box { }
 form .box label[for="field"] { }
 form .box input[type="text"] { }
+#ignore-parent { }

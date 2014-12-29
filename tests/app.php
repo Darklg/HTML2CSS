@@ -118,7 +118,15 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         // Test ignored attributes
         $this->html2css->paths = array();
         $this->html2css->parse_html('<a href="#" data-ng-repeat="n in [1,2,3]"></a>');
-        $this->assertEquals('a { }', $this->html2css->generateCSS());
+        $this->assertEquals("a { }", $this->html2css->generateCSS());
+    }
+
+    function testClearBeforeIDs() {
+
+        // Test if the parent elements of an ID are ignored
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<p><span id="az">az</span></p>');
+        $this->assertEquals("p { }\n#az { }", $this->html2css->generateCSS());
     }
 
     function testFollowingSelectors() {

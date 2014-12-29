@@ -210,6 +210,7 @@ class html2css
         $_pathItems = array_reverse($_rPathItems);
 
         /* Clean up path Items */
+        $_pathItems = $this->filter_clearBeforeIDs($_pathItems);
         $_pathItems = $this->filter_IgnoredNodes($_pathItems);
         $_pathItems = $this->filter_IgnoredSelectors($_pathItems);
         $_pathItems = $this->filter_ParentBEM($_pathItems);
@@ -424,6 +425,18 @@ class html2css
     /* ----------------------------------------------------------
       Filters
     ---------------------------------------------------------- */
+
+    /* Clear before IDs */
+    private function filter_clearBeforeIDs($pathItems) {
+        $_tmpItems = array();
+        foreach ($pathItems as $_item) {
+            if ($_item[0] == '#') {
+                $_tmpItems = array();
+            }
+            $_tmpItems[] = $_item;
+        }
+        return $_tmpItems;
+    }
 
     /* Remove ignored nodes */
     private function filter_IgnoredNodes($pathItems) {
