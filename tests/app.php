@@ -61,6 +61,22 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals('input[type="text"] { }', $this->html2css->generateCSS());
     }
 
+    function testIfGetRole() {
+
+        // Test if field gets role
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<p role="banner">Banner</p>');
+        $this->assertEquals('p[role="banner"] { }', $this->html2css->generateCSS());
+    }
+
+    function testIfGetRoleIfNotDataAttribute() {
+
+        // Test if field gets role if not data attribute
+        $this->html2css->paths = array();
+        $this->html2css->parse_html('<p data-oups="test" role="banner">Banner</p>');
+        $this->assertEquals('p[data-oups="test"] { }', $this->html2css->generateCSS());
+    }
+
     function testLabelGetsFor() {
 
         // Test if label gets for

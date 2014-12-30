@@ -252,10 +252,14 @@ class html2css
             $_nodeIdentity = $node->tagName . '[' . $name . $value . ']';
         }
 
+        /* If role attribute exists, use it */
+        if ($_nodeIdentity == $node->tagName && isset($_nodeAttributes['role'])) {
+            $_nodeIdentity = $node->tagName . '[role="' . $_nodeAttributes['role'] . '"]';
+        }
+
         /* Input : add type */
         if ($node->tagName == 'input' && isset($_nodeAttributes['type'])) {
-            $value = $_nodeAttributes['type'];
-            $_nodeIdentity = $node->tagName . '[type="' . $value . '"]';
+            $_nodeIdentity = $node->tagName . '[type="' . $_nodeAttributes['type'] . '"]';
         }
 
         /* Label : add for */

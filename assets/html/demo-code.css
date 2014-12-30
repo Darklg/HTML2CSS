@@ -6,8 +6,8 @@
 p { }
 p em { }
 p a[data-toggle="true"] { }
-form { }
-form .box { }
-form .box label[for="field"] { }
-form .box input[type="text"] { }
+form[role="search"] { }
+form[role="search"] .box { }
+form[role="search"] .box label[for="field"] { }
+form[role="search"] .box input[type="text"] { }
 #ignore-parent { }
