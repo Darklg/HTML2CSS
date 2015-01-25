@@ -21,6 +21,33 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $this->assertEquals('', $html2css->generateCSS());
     }
 
+    /* ----------------------------------------------------------
+      Testing class
+    ---------------------------------------------------------- */
+
+    function testGenerateEmptySelect() {
+
+        // Testing if an invalid select is always empty
+        $html2css = new html2css(false);
+        $this->assertEquals('', $html2css->generateSelect('test'));
+    }
+
+    function testGenerateValidSelect() {
+
+        // Testing if an invalid select is always empty
+        $html2css = new html2css(false);
+        $this->assertEquals('<div class="option-block"><label for="option_css_format">CSS Format :</label><select name="options[css_format]" id="option_css_format"><option selected="selected" value="compressed">Compressed</option><option  value="expanded">Expanded</option></select></div>', $html2css->generateSelect('css_format'));
+    }
+
+    function testGettingInvalidOption() {
+        $html2css = new html2css(false);
+        $this->assertEquals(false, $html2css->getOption('test'));
+    }
+
+    /* ----------------------------------------------------------
+      Testing conversion
+    ---------------------------------------------------------- */
+
     function testRenderCorrectCSS() {
 
         // Simple test
@@ -166,7 +193,6 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
         $html2css->parse_html('<ul><li>az</li><li>az</li><li>az</li></ul>');
         $this->assertEquals("ul { }\nul li { }\nul li:first-child { }\nul li:last-child { }", $html2css->generateCSS());
     }
-
 
     function testExpandedLayout() {
         $html2css = new html2css(false);

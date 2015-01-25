@@ -8,7 +8,7 @@ class html2css
         'cookie_duration' => 31536000,
         'cookie_version' => 20141230223230,
     );
-    public $choices = array(
+    private $choices = array(
         'css_format' => array(
             'compressed' => 'Compressed',
             'expanded' => 'Expanded',
@@ -338,7 +338,7 @@ class html2css
      * @param  string $id   option id
      * @return mixed        option value
      */
-    private function getOption($id) {
+    public function getOption($id) {
         if (isset($this->options[$id])) {
             return $this->options[$id]['value'];
         }
@@ -431,7 +431,7 @@ class html2css
     ---------------------------------------------------------- */
 
     /* Clear before IDs */
-    private function filter_clearBeforeIDs($pathItems) {
+    public function filter_clearBeforeIDs($pathItems) {
         $_tmpItems = array();
         foreach ($pathItems as $_item) {
             if ($_item[0] == '#') {
@@ -443,7 +443,7 @@ class html2css
     }
 
     /* Remove ignored nodes */
-    private function filter_IgnoredNodes($pathItems) {
+    public function filter_IgnoredNodes($pathItems) {
         $_tmpItems = array();
         $_ignored_nodes = $this->getOption('ignored_nodes');
         foreach ($pathItems as $_item) {
@@ -455,7 +455,7 @@ class html2css
     }
 
     /* Remove ignored selectors */
-    private function filter_IgnoredSelectors($pathItems) {
+    public function filter_IgnoredSelectors($pathItems) {
         $_tmpItems = array();
         $_ignored_selectors = $this->getOption('ignored_selectors');
         foreach ($pathItems as $_item) {
@@ -467,7 +467,7 @@ class html2css
     }
 
     /* Reset path if BEM or Parent detected on a parent item */
-    private function filter_ParentBEM($pathItems) {
+    public function filter_ParentBEM($pathItems) {
         $_tmpItems = array();
         $_parentStrings = $this->getOption('bem_strings') + $this->getOption('parent_strings');
         foreach ($pathItems as $i => $_item) {
@@ -488,7 +488,7 @@ class html2css
     }
 
     /* Do not use parent if contained in item and is a classname */
-    private function filter_ParentContainedClassname($pathItems) {
+    public function filter_ParentContainedClassname($pathItems) {
         $_tmpItems = array();
         foreach ($pathItems as $i => $_item) {
             $_keepItem = true;
