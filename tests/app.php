@@ -34,7 +34,7 @@ class HTML2CSSTests extends PHPUnit_Framework_TestCase
 
     function testGenerateValidSelect() {
 
-        // Testing if an invalid select is always empty
+        // Testing if a valid option has a correct select generated.
         $html2css = new html2css(false);
         $this->assertEquals('<div class="option-block"><label for="option_css_format">CSS Format :</label><select name="options[css_format]" id="option_css_format"><option selected="selected" value="compressed">Compressed</option><option  value="expanded">Expanded</option></select></div>', $html2css->generateSelect('css_format'));
     }
