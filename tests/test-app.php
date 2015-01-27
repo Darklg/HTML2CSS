@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/../inc/html2css.class.php';
 
 class HTML2CSSTests extends PHPUnit_Framework_TestCase
 {

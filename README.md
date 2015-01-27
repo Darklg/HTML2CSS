@@ -1,6 +1,8 @@
 HTML2CSS
 ========
 
+[![Build Status](https://travis-ci.org/Darklg/HTML2CSS.svg?branch=master)](https://travis-ci.org/Darklg/HTML2CSS)
+
 This tool will suggest CSS classes based on the provided HTML.
 
 ## Explanations
