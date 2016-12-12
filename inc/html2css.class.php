@@ -496,6 +496,14 @@ class html2css
                 $_childItem = $pathItems[$i + 1];
                 $_itemIsClass = ($_item[0] == '.');
                 $_parentContained = (strpos($_childItem, $_item) !== false);
+
+                /* Ignore parent if child contains a "-" and is contained in parent : cc-footer-cont footer-cont */
+                $_childItemClass = str_replace('.', '', $_childItem);
+                $_itemClass = str_replace('.', '', $_item);
+                if (strpos($_childItemClass, '-') !== false && strpos($_itemClass, $_childItemClass) !== false) {
+                    $_parentContained = true;
+                }
+
                 if ($_itemIsClass && $_parentContained) {
                     $_keepItem = false;
                 }
