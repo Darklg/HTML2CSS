@@ -1,6 +1,7 @@
 <?php
 class html2css
 {
+    private $cookie;
     public $paths = array();
     private $conf = array(
         'cookie_version' => '',
